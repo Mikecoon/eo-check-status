@@ -1,6 +1,8 @@
 const moment = require('moment')
 const axios = require('axios')
 const term = require( 'terminal-kit' ).terminal;
+const notifier = require('node-notifier');
+const path = require('path');
 
 const link = 'https://www.engineowning.com/shop/ajax/get-product-status?';
 let timer;
@@ -18,7 +20,7 @@ term.grabInput() ;
 const init = async () => {
 	const response = await axios.get(link)
 	const gamesList = response.data.content.content.map(game => game.name)
-
+	
 	term.clear()
 		.cyan('Choose the service you are going to track: \n' )
 		.singleColumnMenu(gamesList, (error, response) => {
@@ -41,9 +43,13 @@ const checkStatus = async (gameName) => {
 			.clear()
 			.cyan(time + ": Out of service." );
 	} else {
-		term
-			.clear()
-			.cyan(time + ": Working!" );
+		
+		notifier.notify({
+		  title: 'Service status update',
+		  message: gameName +' is finally working!',
+		  appID: 'EO service track',
+		  icon: path.join(__dirname, 'navlogo.png')
+		});
 
 		clearInterval(timer)
 		process.exit();
