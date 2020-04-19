@@ -52,7 +52,14 @@ const checkStatus = async (gameName) => {
 		});
 
 		clearInterval(timer)
-		process.exit();
+		
+		setTimeout(() => {
+			term
+			.clear()
+			.cyan( gameName +' is finally working! Exit.');
+			process.exit();
+		}, 100)
+		
 	}	
 }
 
